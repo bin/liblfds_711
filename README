@@ -1,0 +1,13 @@
+libldfs version 7.1.1 with a CMake build system
+
+Original source available here: liblfds.org/
+
+Add this to a CMake project with `ADD_SUBDIRECTORY(liblfds_711)`
+
+To compile stand-alone:
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```

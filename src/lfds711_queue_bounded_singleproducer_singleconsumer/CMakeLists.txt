@@ -1,0 +1,8 @@
+MESSAGE(STATUS "\tBuilding queue (bounded, single producer, single consumer...")
+
+ADD_LIBRARY(queue_bounded_single_single STATIC
+	lfds711_queue_bounded_singleproducer_singleconsumer_cleanup.c
+	lfds711_queue_bounded_singleproducer_singleconsumer_dequeue.c
+	lfds711_queue_bounded_singleproducer_singleconsumer_enqueue.c
+	lfds711_queue_bounded_singleproducer_singleconsumer_init.c
+	lfds711_queue_bounded_singleproducer_singleconsumer_query.c)

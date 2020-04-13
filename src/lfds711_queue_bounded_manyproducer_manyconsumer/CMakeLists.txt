@@ -1,0 +1,8 @@
+MESSAGE(STATUS "\tBuilding queue (bounded, many producer, many consumer...")
+
+ADD_LIBRARY(queue_bounded_many_many STATIC
+	lfds711_queue_bounded_manyproducer_manyconsumer_cleanup.c
+	lfds711_queue_bounded_manyproducer_manyconsumer_dequeue.c
+	lfds711_queue_bounded_manyproducer_manyconsumer_enqueue.c
+	lfds711_queue_bounded_manyproducer_manyconsumer_init.c
+	lfds711_queue_bounded_manyproducer_manyconsumer_query.c)
