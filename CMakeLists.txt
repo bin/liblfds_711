@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/inc)
 ADD_SUBDIRECTORY(${CMAKE_SOURCE_DIR}/src)
 
 # Have to create a dummy target here
-ADD_LIBRARY(lfds STATIC .dummy.c)
+ADD_LIBRARY(lfds STATIC ${CMAKE_SOURCE_DIR}/src/.dummy.c)
 
 TARGET_LINK_LIBRARIES(lfds STATIC
 	btree
