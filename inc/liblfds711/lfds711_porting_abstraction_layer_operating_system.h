@@ -77,6 +77,24 @@
 
 
 
+
+#if (defined(__APPLE__) && defined(__MACH__))
+
+  #ifdef LFDS711_PAL_OPERATING_SYSTEM
+    #error More than one porting abstraction layer matches the current platform in "lfds711_porting_abstraction_layer_operating_system.h".
+  #endif
+
+  #define LFDS711_PAL_OPERATING_SYSTEM
+
+  #define LFDS711_PAL_OS_STRING             "MacOS"
+  #define LFDS711_PAL_ASSERT( expression )  BUG_ON( expression )
+
+#endif
+
+
+
+
+
 /****************************************************************************/
 #if( !defined LFDS711_PAL_OPERATING_SYSTEM )
 

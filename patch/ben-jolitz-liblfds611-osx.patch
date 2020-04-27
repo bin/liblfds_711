@@ -1,0 +1,110 @@
+diff -Naur liblfds6.1.1/liblfds611/inc/liblfds611.h liblfds6.1.1-patched/liblfds611/inc/liblfds611.h
+--- liblfds6.1.1/liblfds611/inc/liblfds611.h	2013-01-02 06:21:45.000000000 -0800
++++ liblfds6.1.1-patched/liblfds611/inc/liblfds611.h	2015-08-04 18:03:20.000000000 -0700
+@@ -93,7 +93,8 @@
+     #define _InterlockedCompareExchangePointer(destination, exchange, compare) _InterlockedCompareExchange((volatile long *) destination, (long) exchange, (long) compare)
+   #endif
+ 
+-  #if (defined __unix__ && defined __x86_64__ && __GNUC__)
++  #if ( ( defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__))) && defined __x86_64__ && __GNUC__)
+     // TRD : any UNIX with GCC on x64
+     #include <assert.h>
+     #include <stdio.h>
+@@ -111,7 +112,8 @@
+     #define LFDS611_BARRIER_PROCESSOR_FULL   __sync_synchronize()
+   #endif
+ 
+-  #if (defined __unix__ && defined __i686__ && __GNUC__)
++  #if ( ( defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__))) && defined __i686__ && __GNUC__)
+     // TRD : any UNIX with GCC on x86
+     #include <assert.h>
+     #include <stdio.h>
+@@ -129,7 +131,8 @@
+     #define LFDS611_BARRIER_PROCESSOR_FULL   __sync_synchronize()
+   #endif
+ 
+-  #if (defined __unix__ && defined __arm__ && __GNUC__)
++  #if ( ( defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__))) && defined __arm__ && __GNUC__)
+     // TRD : any UNIX with GCC on ARM
+     #include <assert.h>
+     #include <stdio.h>
+diff -Naur liblfds6.1.1/test/src/abstraction.h liblfds6.1.1-patched/test/src/abstraction.h
+--- liblfds6.1.1/test/src/abstraction.h	2013-01-02 06:21:45.000000000 -0800
++++ liblfds6.1.1-patched/test/src/abstraction.h	2015-08-04 18:06:13.000000000 -0700
+@@ -27,7 +27,8 @@
+   #define CALLING_CONVENTION  
+ #endif
+ 
+-#if (defined __unix__ && defined __GNUC__)
++#if ((defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__)))&& defined __GNUC__)
+   /* TRD : any UNIX on any CPU with GCC
+ 
+            __unix__   indicates Solaris, Linux, HPUX, etc
+diff -Naur liblfds6.1.1/test/src/abstraction_cpu_count.c liblfds6.1.1-patched/test/src/abstraction_cpu_count.c
+--- liblfds6.1.1/test/src/abstraction_cpu_count.c	2013-01-02 06:21:45.000000000 -0800
++++ liblfds6.1.1-patched/test/src/abstraction_cpu_count.c	2015-08-04 18:11:37.000000000 -0700
+@@ -57,7 +57,8 @@
+ 
+ 
+ /****************************************************************************/
+-#if (defined __linux__ && defined __GNUC__)
++#if ((defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__))) && defined __GNUC__)
+ 
+   /* TRD : Linux on any CPU with GCC
+ 
+diff -Naur liblfds6.1.1/test/src/abstraction_thread_start.c liblfds6.1.1-patched/test/src/abstraction_thread_start.c
+--- liblfds6.1.1/test/src/abstraction_thread_start.c	2013-01-02 06:21:45.000000000 -0800
++++ liblfds6.1.1-patched/test/src/abstraction_thread_start.c	2015-08-04 18:17:50.000000000 -0700
+@@ -95,7 +95,8 @@
+ 
+ 
+ /****************************************************************************/
+-#if (defined __unix__)
++#if (defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__)))
+ 
+   /* TRD : any UNIX on any CPU with any compiler
+ 
+@@ -112,7 +113,7 @@
+ 
+     pthread_attr_t
+       attr;
+-
++    #if (defined __linux__)
+     cpu_set_t
+       cpuset;
+ 
+@@ -121,11 +122,14 @@
+     assert( thread_function != NULL );
+     // TRD : thread_user_state can be NULL
+ 
+-    pthread_attr_init( &attr );
+ 
++    pthread_attr_init( &attr );
+     CPU_ZERO( &cpuset );
+     CPU_SET( cpu, &cpuset );
+     pthread_attr_setaffinity_np( &attr, sizeof(cpuset), &cpuset );
++    #else
++    pthread_attr_init( &attr );
++    #endif
+ 
+     rv_create = pthread_create( thread_state, &attr, thread_function, thread_user_state );
+ 
+diff -Naur liblfds6.1.1/test/src/abstraction_thread_wait.c liblfds6.1.1-patched/test/src/abstraction_thread_wait.c
+--- liblfds6.1.1/test/src/abstraction_thread_wait.c	2013-01-02 06:21:45.000000000 -0800
++++ liblfds6.1.1-patched/test/src/abstraction_thread_wait.c	2015-08-04 18:16:07.000000000 -0700
+@@ -51,7 +51,8 @@
+ 
+ 
+ /****************************************************************************/
+-#if (defined __unix__)
++#if (defined(__unix__) || defined(__unix) || \
++        (defined(__APPLE__) && defined(__MACH__)))
+ 
+   /* TRD : any UNIX on any CPU with any compiler
+ 
