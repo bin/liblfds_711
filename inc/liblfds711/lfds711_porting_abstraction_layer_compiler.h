@@ -466,6 +466,35 @@
 
 
 
+// Not sure what the minimum supported version of Clang is; only tested on 11
+// TODO: Figure out actual version limitations
+#define __clang_minimum_major__ 11
+#define __clang_minimum_minor__ 0
+#define __clang_minimum_patchlevel 3
+#ifdef __clang__
+#if __clang_major__>=__clang_minimum_major__ \
+		&& __clang_minor__>=__clang_minimum_minor__ \
+		&& __clang_patchlevel__>=__clang_minimum_patchlevel__
+	#define LFDS711_PAL_COMPILER
+	#define LFDS711_PAL_COMPILER_STRING          "Clang >= "\
+		__clang_minimum_major__.__clang_minimum_minor__\
+		.__clang_minimum__patchlevel__
+#elif __clang_major__<11
+	#error Clang major version is too old; minimum is \
+		#__clang_minimum_major__ but got #__clang_major__.
+#elif __clang_minor__<0
+	#error Clang minor version is too old; minimum is \
+		#__clang_minimum_minor__ but got #__clang_minor__.
+#elif __clang_patchlevel__<3
+	#error Clang patch level is too old; minimum is \
+		#__clang_minimum_patchlevel__ but got #__clang_patchlevel__.
+#endif
+
+
+
+
+
+
 /****************************************************************************/
 #if( !defined LFDS711_PAL_COMPILER )
 
