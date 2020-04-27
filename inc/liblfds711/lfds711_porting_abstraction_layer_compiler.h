@@ -1,5 +1,5 @@
 /****************************************************************************/
-#if( defined __GNUC__ )
+#if( defined __GNUC__ && !defined __clang__ )
   // TRD : makes checking GCC versions much tidier
   #define LFDS711_PAL_GCC_VERSION ( __GNUC__ * 100 + __GNUC_MINOR__ * 10 + __GNUC_PATCHLEVEL__ )
 #endif
@@ -265,7 +265,7 @@
 
 
 /****************************************************************************/
-#if( defined __GNUC__ && LFDS711_PAL_GCC_VERSION >= 412 && LFDS711_PAL_GCC_VERSION < 473 )
+#if( !defined __clang__ && defined __GNUC__ && LFDS711_PAL_GCC_VERSION >= 412 && LFDS711_PAL_GCC_VERSION < 473 )
 
   #ifdef LFDS711_PAL_COMPILER
     #error More than one porting abstraction layer matches the current platform in lfds711_porting_abstraction_layer_compiler.h
@@ -383,7 +383,7 @@
 
 
 /****************************************************************************/
-#if( defined __GNUC__ && LFDS711_PAL_GCC_VERSION >= 473 )
+#if( !defined __clang__ && defined __GNUC__ && LFDS711_PAL_GCC_VERSION >= 473 )
 
   #ifdef LFDS711_PAL_COMPILER
     #error More than one porting abstraction layer matches the current platform in lfds711_porting_abstraction_layer_compiler.h
@@ -468,37 +468,23 @@
 
 // Not sure what the minimum supported version of Clang is; only tested on 11
 // TODO: Figure out actual version limitations
+#define XSTR(x) STR(x)
+#define STR(x) #x
 #define __clang_minimum_major__ 11
 #define __clang_minimum_minor__ 0
 #define __clang_minimum_patchlevel 3
 #ifdef __clang__
-#if __clang_major__>=__clang_minimum_major__ \
-		&& __clang_minor__>=__clang_minimum_minor__ \
-		&& __clang_patchlevel__>=__clang_minimum_patchlevel__
-	#define LFDS711_PAL_COMPILER
-	#define LFDS711_PAL_COMPILER_STRING          "Clang >= "\
-		__clang_minimum_major__.__clang_minimum_minor__\
-		.__clang_minimum__patchlevel__
-#elif __clang_major__<11
-	#error Clang major version is too old; minimum is \
-		#__clang_minimum_major__ but got #__clang_major__.
-#elif __clang_minor__<0
-	#error Clang minor version is too old; minimum is \
-		#__clang_minimum_minor__ but got #__clang_minor__.
-#elif __clang_patchlevel__<3
-	#error Clang patch level is too old; minimum is \
-		#__clang_minimum_patchlevel__ but got #__clang_patchlevel__.
+	#if __clang_major__>=__clang_minimum_major__ && __clang_minor__>=__clang_minimum_minor__ && __clang_patchlevel__>=__clang_minimum_patchlevel__
+		#define LFDS711_PAL_COMPILER
+		#define LFDS711_PAL_COMPILER_STRING          "Clang >=" __clang_minimum_major__.__clang_minimum_minor__.__clang_minimum__patchlevel__
+	#elif __clang_major__<11
+		#pragma message "Clang major version is too old; minimum is " XSTR(__clang_minimum_major__) " but got " XSTR(__clang_major__)"."
+	#elif __clang_minor__<0
+		#pragma message "Clang minor version is too old; minimum is " XSTR(__clang_minimum_minor__) " but got " XSTR(__clang_minor__)"."
+	#elif __clang_patchlevel__<3
+		#pragma message "Clang patch level is too old; minimum is " XSTR(__clang_minimum_patchlevel__) " but got " XSTR(__clang_patchlevel__)"."
+	#endif
 #endif
 
 
-
-
-
-
-/****************************************************************************/
-#if( !defined LFDS711_PAL_COMPILER )
-
-  #error No matching porting abstraction layer in lfds711_porting_abstraction_layer_compiler.h
-
-#endif
 
